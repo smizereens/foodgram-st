@@ -39,8 +39,7 @@ class Command(BaseCommand):
                 return path
         self.stdout.write(
             self.style.ERROR(
-                f'Файл ingredients.json не найден. 
-                Проверенные пути: {possible_paths}'
+                f'ingredients.json не найден. Проверены: {possible_paths}'
             )
         )
         return None

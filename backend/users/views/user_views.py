@@ -94,8 +94,10 @@ class CustomUserViewSet(UserViewSet):
                     user_serializer = CustomUserSerializer(
                         request.user, context={'request': request}
                     )
-                    return Response(user_serializer.data, status=status.HTTP_200_OK)
-                except Exception as e:
+                    return Response(
+                        user_serializer.data, status=status.HTTP_200_OK
+                    )
+                except Exception:
                     return Response(
                         {'detail': 'Error saving avatar.'},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -108,7 +110,7 @@ class CustomUserViewSet(UserViewSet):
         if request.user.avatar:
             try:
                 request.user.avatar.delete(save=True)
-            except Exception as e:
+            except Exception:
                 return Response(
                     {'detail': 'Error deleting avatar.'},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -131,7 +133,9 @@ class CustomUserViewSet(UserViewSet):
                     {'current_password': ['Неверный пароль.']},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            request.user.set_password(serializer.validated_data['new_password'])
+            request.user.set_password(
+                serializer.validated_data['new_password']
+            )
             request.user.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(

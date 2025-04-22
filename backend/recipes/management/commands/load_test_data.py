@@ -18,7 +18,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             with transaction.atomic():
-                # Проверяем наличие ингредиентов - если их нет, предлагаем импортировать
                 if Ingredient.objects.count() == 0:
                     self.stdout.write(
                         self.style.WARNING(
@@ -40,7 +39,6 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.SUCCESS('Тестовые данные успешно загружены')
                 )
-        
         except Exception as e:
             self.stdout.write(
                 self.style.ERROR(f'Произошла ошибка: {e}')
@@ -67,7 +65,6 @@ class Command(BaseCommand):
             tags.append(tag)
             if created:
                 self.stdout.write(f'Создан тег: {tag.name}')
-        
         return tags
 
     def _create_users(self):
@@ -116,7 +113,6 @@ class Command(BaseCommand):
                 user.save()
                 self.stdout.write(f'Создан пользователь: {user.username}')
             users.append(user)
-        
         return users
 
     def _create_recipes(self, users, tags):
@@ -124,9 +120,9 @@ class Command(BaseCommand):
         ingredients = list(Ingredient.objects.all())
         # Базовое изображение для всех рецептов (простой пиксель)
         base64_image = (
-            'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAA'
-            'DUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=='
-        )        
+            'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAA'
+            'ABAAEAAAIBRAA7'
+        )
         image_format, imgstr = base64_image.split(';base64,')
         image_data = base64.b64decode(imgstr)
         recipes_data = [
@@ -138,7 +134,7 @@ class Command(BaseCommand):
             },
             {
                 'name': 'Картофель по-деревенски',
-                'text': 'Ароматный запеченный картофель с чесноком и специями.',
+                'text': 'Ароматный картофель с чесноком и специями.',
                 'cooking_time': 40,
                 'author': users[1]  # user1
             },
@@ -150,7 +146,7 @@ class Command(BaseCommand):
             },
             {
                 'name': 'Греческий салат',
-                'text': 'Свежий салат с огурцами, помидорами, оливками и сыром фета.',
+                'text': 'Свежий салат с огурцами, помидорами и сыром фета.',
                 'cooking_time': 20,
                 'author': users[2]  # user2
             },
@@ -223,7 +219,8 @@ class Command(BaseCommand):
                     )
                     if created:
                         self.stdout.write(
-                            f'Создана подписка: {user.username} -> {author.username}'
+                            f'Создана подписка: {user.username} -> '
+                            f'{author.username}'
                         )
 
     def _create_favorites_and_shopping_carts(self, users):
