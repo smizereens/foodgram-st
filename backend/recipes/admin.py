@@ -21,7 +21,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ('author', 'name', 'tags')
     search_fields = ('name', 'author__username', 'author__email')
     inlines = (RecipeIngredientInline,)
-    
+
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         return queryset.annotate(favorites_count=Count('favorited_by'))
