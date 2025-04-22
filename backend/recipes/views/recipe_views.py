@@ -10,7 +10,7 @@ from recipes.models import (
     Ingredient, Recipe, RecipeIngredient, Tag, Favorite, ShoppingCart
 )
 from recipes.serializers.recipe_serializers import (
-    IngredientSerializer, RecipeListSerializer, 
+    IngredientSerializer, RecipeListSerializer,
     RecipeCreateUpdateSerializer, RecipeMinifiedSerializer,
     TagSerializer, ShortLinkSerializer
 )
@@ -69,7 +69,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk=None):
         """Добавление и удаление рецепта из избранного."""
         recipe = get_object_or_404(Recipe, id=pk)
-        
         if request.method == 'POST':
             if Favorite.objects.filter(
                 user=request.user, recipe=recipe
@@ -78,11 +77,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     {'detail': 'Рецепт уже в избранном!'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            
             Favorite.objects.create(user=request.user, recipe=recipe)
             serializer = RecipeMinifiedSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
         favorite = Favorite.objects.filter(
             user=request.user, recipe=recipe
         )
@@ -91,7 +88,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 {'detail': 'Рецепта нет в избранном!'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
         favorite.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -103,7 +99,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk=None):
         """Добавление и удаление рецепта из списка покупок."""
         recipe = get_object_or_404(Recipe, id=pk)
-        
         if request.method == 'POST':
             if ShoppingCart.objects.filter(
                 user=request.user, recipe=recipe
@@ -112,11 +107,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     {'detail': 'Рецепт уже в списке покупок!'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            
             ShoppingCart.objects.create(user=request.user, recipe=recipe)
             serializer = RecipeMinifiedSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
         cart = ShoppingCart.objects.filter(
             user=request.user, recipe=recipe
         )
@@ -125,7 +118,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 {'detail': 'Рецепта нет в списке покупок!'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
         cart.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -143,7 +135,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).annotate(
             total_amount=Sum('amount')
         ).order_by('ingredient__name')
-        
         shopping_list = "Список покупок:\n\n"
         for i, item in enumerate(ingredients, 1):
             shopping_list += (
@@ -151,10 +142,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 f"({item['ingredient__measurement_unit']}) — "
                 f"{item['total_amount']}\n"
             )
-        
         response = HttpResponse(
             shopping_list,
             content_type='text/plain; charset=utf-8'
         )
-        response['Content-Disposition'] = 'attachment; filename=shopping_list.txt'
+        response['Content-Disposition'] = (
+            'attachment; filename=shopping_list.txt'
+        )
         return response

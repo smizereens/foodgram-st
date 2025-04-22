@@ -27,7 +27,9 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     """Сериализатор для представления ингредиентов в рецепте."""
     id = serializers.IntegerField(source='ingredient.id')
     name = serializers.CharField(source='ingredient.name')
-    measurement_unit = serializers.CharField(source='ingredient.measurement_unit')
+    measurement_unit = serializers.CharField(
+        source='ingredient.measurement_unit'
+    )
 
     class Meta:
         model = RecipeIngredient
@@ -110,7 +112,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Необходимо добавить хотя бы один ингредиент!'
             )
-        
         ingredients_list = []
         for item in value:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
@@ -123,7 +124,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
                     'Количество ингредиента должно быть больше нуля!'
                 )
             ingredients_list.append(ingredient)
-        
         return value
 
     def validate_tags(self, value):
@@ -153,11 +153,9 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags', [])
         author = self.context.get('request').user
-        
         recipe = Recipe.objects.create(author=author, **validated_data)
         recipe.tags.set(tags)
         self.create_update_ingredients(ingredients, recipe)
-        
         return recipe
 
     @transaction.atomic
@@ -167,11 +165,9 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             ingredients = validated_data.pop('ingredients')
             instance.ingredients.clear()
             self.create_update_ingredients(ingredients, instance)
-        
         if 'tags' in validated_data:
             tags = validated_data.pop('tags')
             instance.tags.set(tags)
-        
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):

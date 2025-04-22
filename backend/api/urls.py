@@ -6,7 +6,10 @@ from recipes.views.recipe_views import (
     IngredientViewSet, RecipeViewSet, TagViewSet
 )
 
-me_avatar_view = CustomUserViewSet.as_view({'put': 'me_avatar', 'delete': 'me_avatar'})
+me_avatar_view = CustomUserViewSet.as_view({
+    'put': 'me_avatar', 
+    'delete': 'me_avatar'
+})
 
 router = DefaultRouter()
 router.register(r'users', CustomUserViewSet, basename='users')

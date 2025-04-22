@@ -6,7 +6,9 @@ import base64
 import os
 
 from users.models import User, Subscription
-from recipes.models import Ingredient, Tag, Recipe, RecipeIngredient, Favorite, ShoppingCart
+from recipes.models import (
+    Ingredient, Tag, Recipe, RecipeIngredient, Favorite, ShoppingCart
+)
 
 
 class Command(BaseCommand):
@@ -25,21 +27,16 @@ class Command(BaseCommand):
                         )
                     )
                     return
-
                 # Создаем тестовые теги, если их еще нет
                 tags = self._create_tags()
-                
                 # Создаем тестовых пользователей, если их еще нет
                 users = self._create_users()
-                
                 # Создаем тестовые рецепты (если их меньше 10)
                 if Recipe.objects.count() < 10:
                     self._create_recipes(users, tags)
-                
                 # Создаем тестовые подписки, избранное и списки покупок
                 self._create_subscriptions(users)
                 self._create_favorites_and_shopping_carts(users)
-                
                 self.stdout.write(
                     self.style.SUCCESS('Тестовые данные успешно загружены')
                 )
@@ -58,7 +55,6 @@ class Command(BaseCommand):
             {'name': 'Десерт', 'color': '#FFA500', 'slug': 'dessert'},
             {'name': 'Напиток', 'color': '#1E90FF', 'slug': 'drink'},
         ]
-        
         tags = []
         for tag_data in tags_data:
             tag, created = Tag.objects.get_or_create(
@@ -108,7 +104,6 @@ class Command(BaseCommand):
                 'password': 'user3pass'
             },
         ]
-        
         users = []
         for user_data in users_data:
             password = user_data.pop('password')
@@ -127,12 +122,12 @@ class Command(BaseCommand):
     def _create_recipes(self, users, tags):
         """Создание рецептов."""
         ingredients = list(Ingredient.objects.all())
-        
         # Базовое изображение для всех рецептов (простой пиксель)
-        base64_image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=='
-        image_format, imgstr = base64_image.split(';base64,')
+        base64_image = (
+            'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAA'
+            'DUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=='
+        )        image_format, imgstr = base64_image.split(';base64,')
         image_data = base64.b64decode(imgstr)
-        
         recipes_data = [
             {
                 'name': 'Омлет с помидорами',
@@ -183,7 +178,6 @@ class Command(BaseCommand):
                 'author': users[0]  # admin
             },
         ]
-        
         for recipe_data in recipes_data:
             recipe, created = Recipe.objects.get_or_create(
                 name=recipe_data['name'],
@@ -193,7 +187,6 @@ class Command(BaseCommand):
                     'cooking_time': recipe_data['cooking_time'],
                 }
             )
-            
             if created:
                 # Добавляем изображение
                 recipe.image.save(
@@ -201,11 +194,9 @@ class Command(BaseCommand):
                     ContentFile(image_data),
                     save=True
                 )
-                
                 # Добавляем теги к рецепту
                 recipe_tags = random.sample(tags, k=random.randint(1, 3))
                 recipe.tags.set(recipe_tags)
-                
                 # Добавляем ингредиенты к рецепту
                 recipe_ingredients = []
                 for _ in range(random.randint(3, 8)):
@@ -217,9 +208,7 @@ class Command(BaseCommand):
                         amount=amount
                     )
                     recipe_ingredients.append(recipe_ingredient)
-                
                 RecipeIngredient.objects.bulk_create(recipe_ingredients)
-                
                 self.stdout.write(f'Создан рецепт: {recipe.name}')
 
     def _create_subscriptions(self, users):
@@ -241,7 +230,6 @@ class Command(BaseCommand):
         recipes = list(Recipe.objects.all())
         if not recipes:
             return
-        
         for user in users:
             # Добавляем случайные рецепты в избранное
             for _ in range(random.randint(1, min(5, len(recipes)))):
@@ -252,9 +240,9 @@ class Command(BaseCommand):
                 )
                 if created:
                     self.stdout.write(
-                        f'Рецепт {recipe.name} добавлен в избранное пользователя {user.username}'
+                        f'Рецепт {recipe.name} добавлен в избранное '
+                        f'пользователя {user.username}'
                     )
-            
             # Добавляем случайные рецепты в список покупок
             for _ in range(random.randint(1, min(3, len(recipes)))):
                 recipe = random.choice(recipes)
@@ -264,5 +252,6 @@ class Command(BaseCommand):
                 )
                 if created:
                     self.stdout.write(
-                        f'Рецепт {recipe.name} добавлен в список покупок пользователя {user.username}'
+                        f'Рецепт {recipe.name} добавлен в список покупок '
+                        f'пользователя {user.username}'
                     )

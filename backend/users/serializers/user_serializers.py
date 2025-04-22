@@ -65,7 +65,6 @@ class CustomUserSerializer(UserSerializer):
                 user=request.user, author=obj
             ).exists()
         return False
-    
     def get_avatar(self, obj):
         if obj.avatar:
             request = self.context.get('request')
@@ -107,13 +106,11 @@ class UserWithRecipesSerializer(CustomUserSerializer):
         request = self.context.get('request')
         recipes_limit = request.query_params.get('recipes_limit')
         recipes = obj.recipes.all()
-        
         if recipes_limit:
             try:
                 recipes = recipes[:int(recipes_limit)]
             except ValueError:
                 pass
-        
         return RecipeMinifiedSerializer(
             recipes, many=True, context={'request': request}
         ).data

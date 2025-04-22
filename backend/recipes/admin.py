@@ -21,14 +21,11 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ('author', 'name', 'tags')
     search_fields = ('name', 'author__username', 'author__email')
     inlines = (RecipeIngredientInline,)
-    
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         return queryset.annotate(favorites_count=Count('favorited_by'))
-    
     def favorites_count(self, obj):
         return obj.favorites_count
-    
     favorites_count.short_description = 'Количество добавлений в избранное'
 
 
