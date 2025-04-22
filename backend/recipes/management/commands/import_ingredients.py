@@ -95,8 +95,8 @@ class Command(BaseCommand):
             Ingredient.objects.bulk_create(ingredients_to_create)
             self.stdout.write(
                 self.style.SUCCESS(
-                    f'Успешно импортировано {len(ingredients_to_create)} 
-                    ингредиентов'
+                    f'Успешно импортировано {len(ingredients_to_create)} '
+                    f'ингредиентов'
                 )
             )
         else:

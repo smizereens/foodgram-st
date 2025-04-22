@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.core.files.base import ContentFile
 import base64
-import os
 
 from users.models import User, Subscription
 from recipes.models import (
