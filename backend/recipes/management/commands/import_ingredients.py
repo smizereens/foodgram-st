@@ -1,4 +1,5 @@
 import json
+import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -20,7 +21,6 @@ class Command(BaseCommand):
             if ingredients_data is None:
                 return
             self._import_ingredients(ingredients_data)
-            
         except Exception as e:
             self.stdout.write(
                 self.style.ERROR(f'Произошла ошибка: {e}')
@@ -55,7 +55,7 @@ class Command(BaseCommand):
         except json.JSONDecodeError:
             self.stdout.write(
                 self.style.ERROR(
-                    f'Ошибка декодирования JSON в файле: ' 
+                    f'Ошибка декодирования JSON в файле: '
                     f'{file_path}'
                 )
             )
@@ -81,7 +81,7 @@ class Command(BaseCommand):
         self._create_ingredients(ingredients_to_create)
 
     def _get_existing_ingredients(self):
-        """Получение словаря существующих 
+        """Получение словаря существующих
         ингредиентов для проверки дубликатов."""
         existing_ingredients = {}
         for ingredient in Ingredient.objects.all():
