@@ -65,6 +65,7 @@ class CustomUserSerializer(UserSerializer):
                 user=request.user, author=obj
             ).exists()
         return False
+
     def get_avatar(self, obj):
         if obj.avatar:
             request = self.context.get('request')

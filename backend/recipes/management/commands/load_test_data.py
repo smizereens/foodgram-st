@@ -126,7 +126,8 @@ class Command(BaseCommand):
         base64_image = (
             'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAA'
             'DUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=='
-        )        image_format, imgstr = base64_image.split(';base64,')
+        )        
+        image_format, imgstr = base64_image.split(';base64,')
         image_data = base64.b64decode(imgstr)
         recipes_data = [
             {

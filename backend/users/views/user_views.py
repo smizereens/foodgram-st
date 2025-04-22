@@ -113,7 +113,6 @@ class CustomUserViewSet(UserViewSet):
                     {'detail': 'Error deleting avatar.'},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
-        else:
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(

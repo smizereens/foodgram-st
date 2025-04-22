@@ -10,6 +10,7 @@ from recipes.models import Ingredient
 class Command(BaseCommand):
     """Команда для импорта ингредиентов из JSON-файла."""
     help = 'Импорт ингредиентов из JSON-файла'
+
     def handle(self, *args, **options):
         """Основной метод команды."""
         data_path = self._find_ingredients_file()
@@ -38,7 +39,8 @@ class Command(BaseCommand):
                 return path
         self.stdout.write(
             self.style.ERROR(
-                f'Файл ingredients.json не найден. Проверенные пути: {possible_paths}'
+                f'Файл ingredients.json не найден. 
+                Проверенные пути: {possible_paths}'
             )
         )
         return None
@@ -54,7 +56,8 @@ class Command(BaseCommand):
             )
         except json.JSONDecodeError:
             self.stdout.write(
-                self.style.ERROR(f'Ошибка декодирования JSON в файле: {file_path}')
+                self.style.ERROR(f'Ошибка декодирования JSON в файле: 
+                {file_path}')
             )
         return None
 
@@ -75,11 +78,11 @@ class Command(BaseCommand):
                 Ingredient(name=name, measurement_unit=measurement_unit)
             )
             existing_ingredients[key] = True
-        
         self._create_ingredients(ingredients_to_create)
 
     def _get_existing_ingredients(self):
-        """Получение словаря существующих ингредиентов для проверки дубликатов."""
+        """Получение словаря существующих 
+        ингредиентов для проверки дубликатов."""
         existing_ingredients = {}
         for ingredient in Ingredient.objects.all():
             key = f"{ingredient.name}_{ingredient.measurement_unit}"
@@ -92,7 +95,8 @@ class Command(BaseCommand):
             Ingredient.objects.bulk_create(ingredients_to_create)
             self.stdout.write(
                 self.style.SUCCESS(
-                    f'Успешно импортировано {len(ingredients_to_create)} ингредиентов'
+                    f'Успешно импортировано {len(ingredients_to_create)} 
+                    ингредиентов'
                 )
             )
         else:

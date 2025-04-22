@@ -7,7 +7,7 @@ from recipes.views.recipe_views import (
 )
 
 me_avatar_view = CustomUserViewSet.as_view({
-    'put': 'me_avatar', 
+    'put': 'me_avatar',
     'delete': 'me_avatar'
 })
 
